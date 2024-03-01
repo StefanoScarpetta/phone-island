@@ -13,11 +13,22 @@ const widgetDivs = document.querySelectorAll('.phone-island')
 widgetDivs.forEach((div) => {
   const config: string = div.getAttribute('data-config') || ''
   const showAlways: boolean = div.getAttribute('showAlways') === 'true' ? true : false
+  const onMouseEnterIsland: () => void | undefined = new Function(
+    div.getAttribute('onMouseEnterIsland') || '',
+  )()
+  const onMouseLeaveIsland: () => void = new Function(
+    div.getAttribute('onMouseLeaveIsland') || '',
+  )()
 
   const root = createRoot(div)
   root.render(
     <React.StrictMode>
-      <PhoneIsland dataConfig={config} showAlways={showAlways} />
+      <PhoneIsland
+        dataConfig={config}
+        showAlways={showAlways}
+        onMouseEnterIsland={onMouseEnterIsland}
+        onMouseLeaveIsland={onMouseLeaveIsland}
+      />
     </React.StrictMode>,
   )
 })

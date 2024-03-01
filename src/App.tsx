@@ -13,13 +13,20 @@ import { detach } from './lib/webrtc/messages'
 interface PhoneIslandProps {
   dataConfig: string
   showAlways?: boolean
+  onMouseEnterIsland?: () => void
+  onMouseLeaveIsland?: () => void
 }
 
 interface DeviceInputOutputTypes {
   deviceId: string
 }
 
-export const PhoneIsland: FC<PhoneIslandProps> = ({ dataConfig, showAlways = false }) => {
+export const PhoneIsland: FC<PhoneIslandProps> = ({
+  dataConfig,
+  showAlways = false,
+  onMouseEnterIsland,
+  onMouseLeaveIsland,
+}) => {
   const CONFIG: string[] = Base64.atob(dataConfig || '').split(':')
   const HOST_NAME: string = CONFIG[0]
   const USERNAME: string = CONFIG[1]
@@ -146,7 +153,11 @@ export const PhoneIsland: FC<PhoneIslandProps> = ({ dataConfig, showAlways = fal
               reloadedCallback={() => setReloadedSocket(true)}
             >
               <Events sipHost={SIP_HOST}>
-                <Island showAlways={showAlways} />
+                <Island
+                  showAlways={showAlways}
+                  onMouseEnterIsland={onMouseEnterIsland}
+                  onMouseLeaveIsland={onMouseLeaveIsland}
+                />
               </Events>
             </Socket>
           </RestAPI>

@@ -22,7 +22,7 @@ import Close from './Close'
  *
  * @param showAlways Sets the Island ever visible
  */
-export const Island: FC<IslandProps> = ({ showAlways }) => {
+export const Island: FC<IslandProps> = ({ showAlways, onMouseEnterIsland, onMouseLeaveIsland }) => {
   // Get the currentCall info
   const { incoming, accepted, outgoing, transferring } = useSelector(
     (state: RootState) => state.currentCall,
@@ -82,49 +82,55 @@ export const Island: FC<IslandProps> = ({ showAlways }) => {
       ref={islandContainerRef}
       className='pi-absolute pi-min-w-full pi-min-h-full pi-left-0 pi-top-0 pi-overflow-hidden pi-pointer-events-none pi-flex pi-items-center pi-justify-center pi-content-center pi-phone-island-container pi-z-1000'
     >
-      {(incoming ||
-        outgoing ||
-        accepted ||
-        showAlways ||
-        activeAlertsCount > 0 ||
-        view === 'player' ||
-        view === 'recorder') && (
-        <>
-          <IslandDrag islandContainerRef={islandContainerRef}>
-            {/* Add background call visibility logic */}
-            <BackCall isVisible={view === 'keypad' || view === 'transfer' || transferring} />
-            <IslandMotions>
-              {/* The views logic */}
-              <AlertGuard>
-                {currentView === 'call' ? (
-                  <ViewsTransition forView='call'>
-                    <CallView />
-                  </ViewsTransition>
-                ) : currentView === 'keypad' ? (
-                  <ViewsTransition forView='keypad'>
-                    <KeyboardView />
-                  </ViewsTransition>
-                ) : currentView === 'transfer' ? (
-                  <ViewsTransition forView='transfer'>
-                    <TransferListView />
-                  </ViewsTransition>
-                ) : currentView === 'player' ? (
-                  <ViewsTransition forView='player'>
-                    <AudioPlayerView />
-                  </ViewsTransition>
-                ) : currentView === 'recorder' ? (
-                  <ViewsTransition forView='recorder'>
-                    <RecorderView />
-                  </ViewsTransition>
-                ) : (
-                  <></>
-                )}
-              </AlertGuard>
-            </IslandMotions>
-            <Close />
-          </IslandDrag>
-        </>
-      )}
+      <div
+        id='phone-island-id'
+        onMouseEnter={() => onMouseEnterIsland?.()}
+        onMouseLeave={() => onMouseLeaveIsland?.()}
+      >
+        {(incoming ||
+          outgoing ||
+          accepted ||
+          showAlways ||
+          activeAlertsCount > 0 ||
+          view === 'player' ||
+          view === 'recorder') && (
+          <>
+            <IslandDrag islandContainerRef={islandContainerRef}>
+              {/* Add background call visibility logic */}
+              <BackCall isVisible={view === 'keypad' || view === 'transfer' || transferring} />
+              <IslandMotions>
+                {/* The views logic */}
+                <AlertGuard>
+                  {currentView === 'call' ? (
+                    <ViewsTransition forView='call'>
+                      <CallView />
+                    </ViewsTransition>
+                  ) : currentView === 'keypad' ? (
+                    <ViewsTransition forView='keypad'>
+                      <KeyboardView />
+                    </ViewsTransition>
+                  ) : currentView === 'transfer' ? (
+                    <ViewsTransition forView='transfer'>
+                      <TransferListView />
+                    </ViewsTransition>
+                  ) : currentView === 'player' ? (
+                    <ViewsTransition forView='player'>
+                      <AudioPlayerView />
+                    </ViewsTransition>
+                  ) : currentView === 'recorder' ? (
+                    <ViewsTransition forView='recorder'>
+                      <RecorderView />
+                    </ViewsTransition>
+                  ) : (
+                    <></>
+                  )}
+                </AlertGuard>
+              </IslandMotions>
+              <Close />
+            </IslandDrag>
+          </>
+        )}
+      </div>
       <div className='pi-hidden'>
         <audio loop={audioPlayerLoop} ref={audioPlayer}></audio>
         <audio muted={true} ref={localAudio}></audio>
@@ -140,4 +146,6 @@ Island.displayName = 'Island'
 
 interface IslandProps {
   showAlways?: boolean
+  onMouseEnterIsland?: () => void
+  onMouseLeaveIsland?: () => void
 }
